@@ -35,13 +35,15 @@ void *newMalloc(size_t size){
 
     size_t totalSize = PAGE_SIZE + size;
 
-    heapChunk *newChunk = mmap(NULL,size,PROT_WRITE|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1,0);
+    heapChunk *newChunk = mmap(NULL,size,PROT_WRITE|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1,0); 
+    // mmap to allocate new chunk of memory size of the argument
 
     if (newChunk == MAP_FAILED){
         printf("Mmap error");
         return 0;
     }
 
+    //adding the new chunk to the linked list
     newChunk->size=totalSize;
     newChunk->free=false;
     newChunk->next= NULL;
