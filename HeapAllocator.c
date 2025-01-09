@@ -60,7 +60,26 @@ void *newMalloc(size_t size){
     return (void*)(newChunk+1);
 }
 
-int newFree(size_t item){
+int newFree(void *item){
+
+    if (!item){
+    
+    printf("Item cannot be free'd");
+    return 1;
+    }
+
+    heapChunk * chunkToBeRem = (heapChunk*)item -1; // this will get the metadata of the block
+
+    chunkToBeRem->free=true;
+
+    //Coalescing free block to reduce fragmentation
+
+    heapChunk *current = chunkToBeRem;
+
+    while(current->next && current->next->free){
+        current->size += BLOCK_SIZE + current->next->size;
+        current->next = current->next->next;
+    }
 
     return 0;
 }

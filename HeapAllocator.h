@@ -22,7 +22,7 @@ typedef struct heapChunk{
 
 
 int *newMalloc(size_t item);
-int newFree(size_t item);
+int newFree(void *item);
 
 
 
