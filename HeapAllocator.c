@@ -62,10 +62,10 @@ void *newMalloc(size_t size){
 
 int newFree(void *item){
 
-    if (!item){
+    if (item == NULL){
     
     printf("Item cannot be free'd");
-    return 1;
+    return 0;
     }
 
     heapChunk * chunkToBeRem = (heapChunk*)item -1; // this will get the metadata of the block
@@ -101,5 +101,59 @@ int newFree(void *item){
         current->next = current->next->next;
     }
 
+    return 1;
+}
+
+void* newRealloc(void *item, size_t size){
+
+    if (item == NULL){
+    
+    printf("Item cannot be free'd");
     return 0;
+    }
+
+    if (size == 0){
+        printf("Invalid size");
+        return 0;
+    }
+
+    heapChunk *chunkToBeRealloc = (heapChunk*)item -1;
+
+    //1 if the chunk size is big enough, no change
+
+    if (chunkToBeRealloc->size >= size){
+        return item;
+    }
+
+    //2 if the size is bigger
+
+    //Create the new size of the block
+
+    if (chunkToBeRealloc->next && chunkToBeRealloc->next->free && 
+    chunkToBeRealloc->size+ BLOCK_SIZE + chunkToBeRealloc->next->size >= size){
+
+        chunkToBeRealloc->size = BLOCK_SIZE + chunkToBeRealloc->next->size;
+        chunkToBeRealloc->next = chunkToBeRealloc->next->next;
+        return item;
+
+    }
+
+
+    // copy the memory over to the new block with the adjusted memory size
+    void* newBlock = newMalloc(item);
+    if(!newBlock){
+        return NULL;
+    }
+
+    memcpy(newBlock,item,chunkToBeRealloc->size);
+
+    free(item);
+
+    return newBlock;
+    
+
+
+
+
+
 }
