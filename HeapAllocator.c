@@ -70,6 +70,26 @@ int newFree(void *item){
 
     heapChunk * chunkToBeRem = (heapChunk*)item -1; // this will get the metadata of the block
 
+    if(chunkToBeRem->free == true){
+        printf("Ptr already free");
+        return 0;
+    }
+    heapChunk* currentPrtCheck = Heap.start;
+    bool pointerInHeap =false;
+
+    while(currentPrtCheck){
+        if(currentPrtCheck == chunkToBeRem){
+            pointerInHeap = true;
+        }
+        currentPrtCheck = currentPrtCheck->next;
+    }
+
+    if(!pointerInHeap){
+        printf("Pointer is not in the heap");
+        return 0;
+        
+    }
+
     chunkToBeRem->free=true;
 
     //Coalescing free block to reduce fragmentation
